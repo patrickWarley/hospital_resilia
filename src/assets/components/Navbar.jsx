@@ -1,10 +1,12 @@
+import { Link } from "react-router-dom";
 function Navbar() {
   const links=[
     {name:"Medicos", link:"#"},
     { name: "Pacientes", link: "#" },
     { name: "Consultas", link: "#" },
-    { name: "Medicamentos", link: "#" }
-  ]
+    { name: "Medicamentos", link: "/medicamentos" }
+  ];
+
   return (
   <nav className="d-flex navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <a className="navbar-brand p-3" href="#">Modulo de gerenciamento </a>
@@ -16,7 +18,7 @@ function Navbar() {
           {
             links.map(link =>{
               return <li className="nav-item m-3 m-lg-0">
-                  <a className="nav-link" href={link.link}>{link.name}</a>
+                  <Link className="nav-link" to={link.link}>{link.name}</Link>
               </li>
             })
           }

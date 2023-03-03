@@ -15,7 +15,7 @@ const mockMedicos = () => {
   return result;
 }
 
-function ListarMedicos() {
+function Medicos() {
   const [medicos, setMedicos] = useState(null);
 
   function getMedicos() {
@@ -72,4 +72,4 @@ function ListarMedicos() {
   );
 }
 
-export default ListarMedicos;
+export default Medicos;

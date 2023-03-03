@@ -3,7 +3,8 @@ import App from "./App";
 import Home from "./assets/pages/Home";
 import Login from "./assets/pages/Login";
 import CadastroMedico from "./assets/pages/CadastroMedico";
-import ListarMedicos from "./assets/pages/ListarMedicos";
+import Medicos from "./assets/pages/Medicos";
+import Medicamentos from "./assets/pages/Medicamentos";
 
 export const routes = createBrowserRouter([
   {
@@ -24,7 +25,11 @@ export const routes = createBrowserRouter([
       },
       {
         path: '/medicos',
-        element: <ListarMedicos />
+        element: <Medicos/>
+      },
+      {
+        path:'/medicamentos',
+        element:<Medicamentos/>
       }
     ]
   },
