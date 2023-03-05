@@ -10,7 +10,6 @@ import MedicamentoForm from "../components/MedicamentoForm";
 
 function Medicamentos() {
   const [medicamentos, setMedicamentos] = useState([]);
-  const [showEditModal, setShowEditModal] = useState(false);
 
   const [produtoEdit, setProdutoEdit] = useState(null);
 
