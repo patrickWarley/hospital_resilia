@@ -51,21 +51,22 @@ function Medicamentos() {
     console.log(result);
   }
 
-  const editarMedicamento = async (data) => {
+  const editarMedicamento = async (data, callback) => {
     const submitData = {
       ...data,
       lote: moment(data.lote).format('YYYY-MM-DD'),
       validade: moment(data.validade).format('YYYY-MM-DD')
     }
 
-    const result = axios.put(`/medicamentosAPI/${produtoEdit.id}`, {
+    const result = await axios.put(`/medicamentosAPI/${produtoEdit.id}`, {
       "medicamento": submitData
     }, {
       headers: {
         'Content-Type': 'application/json'
       }
     })
-
+    
+    if(callback!==undefined) callback(result);
     console.log(result);
   }
 
