@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import Controls from "../../components/Controls";
 
 const mockMedicos = () => {
   var result = [];
@@ -27,16 +29,11 @@ function Medicos() {
   }, [])
 
   return (
-    <div className="container-fluid mt-5 min-vh-100 vw-100">
-      <div className="controls col-lg-8 container py-3 d-flex flex-column">
-        <form className="" onSubmit={{}}>
-          <input className="rounded p-1 col-10" type="text" name="buscar" id="buscar" placeholder="Pesquisar:" />
-          <input className="btn col-2 btn-secondary " type="submit" value="Buscar" />
-        </form>
-        <input className="btn btn-success w-25 mt-4" type="button" value="Adicionar" />
-      </div>
-
-      <div className="container medicos-grid col-lg-8">
+    <div className="container mt-5 min-vh-100">
+      <Controls
+        action={<Link to="/cadastroMedico" className="btn btn-success rounded-0">Cadastrar Medico</Link>}
+      />
+      <div className="container medicos-grid col-12">
         <ul className="list-group mb-5">{
           medicos?.map(medico => {
             return (

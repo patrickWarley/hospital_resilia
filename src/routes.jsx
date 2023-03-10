@@ -2,8 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import Home from "./assets/pages/Home";
 import Login from "./assets/pages/Login";
-import CadastroMedico from "./assets/pages/CadastroMedico";
-import Medicos from "./assets/pages/Medicos";
+import CadastroMedico from "./assets/pages/medicos/CadastroMedico";
+import Medicos from "./assets/pages/medicos/Medicos";
 import Medicamentos from "./assets/pages/Medicamentos";
 
 export const routes = createBrowserRouter([

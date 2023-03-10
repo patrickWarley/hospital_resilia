@@ -14,19 +14,17 @@ const schema = yup.object({
 })
 
 function MedicamentoForm({ submit, title, values }) {
-  const initialValues = null || { nome: "", valor: 0, qtd_estoque: 0, validade: "", lote: "" };
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema), values
   });
+  
   const[alert, setAlert] =useState(null);
 
   function onSubmit(data) {
     //this is ugly and hard to understand,:D
     //I'm sending a callback so I can show a message bellow the form
     submit(data, (result) => {
-      if(result.error)setAlert({message:"Algum erro ocorreu! check as informações e tente novamente!", variant:"danger"});
-
-      console.log(result.data)
+      if(result.data.error)setAlert({message:result.data.mensagem, variant:"danger"});
       setAlert({message:result.data.mensagem, variant:"success"})
     });
   }
@@ -74,7 +72,7 @@ function MedicamentoForm({ submit, title, values }) {
         <input className="mt-5 px-3 btn btn-success" type="submit" value={'salvar'} />
       </form >
       {alert!== null&&(
-        <div className={`row alert alert-${alert.variant}`} >
+        <div className={`m-3 row alert alert-${alert.variant}`} >
           { alert.message }
         </div>
       ) 

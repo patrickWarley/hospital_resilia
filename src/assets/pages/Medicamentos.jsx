@@ -7,6 +7,7 @@ import Loading from "../components/Loading";
 import ListaMedicamentos from "../components/ListaMedicamentos";
 import Modal from "../components/Modal"
 import MedicamentoForm from "../components/MedicamentoForm";
+import Controls from "../components/Controls";
 
 function Medicamentos() {
   const [medicamentos, setMedicamentos] = useState([]);
@@ -15,14 +16,14 @@ function Medicamentos() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [alert, setAlert] = useState(null);
+  
   function getMedicamentos() {
     axios.get('http://localhost:3000/medicamentosAPI')
       .then(result => {
         setMedicamentos(result.data);
         setLoading(false);
       }).catch(err => {
-        console.log(err);
         setError(err);
         setLoading(false);
       });
@@ -32,7 +33,7 @@ function Medicamentos() {
     getMedicamentos();
   }, []);
 
-  const adicionarMedicamento = async (data) => {
+  const adicionarMedicamento = async (data, callback) => {
     const submitData = {
       ...data,
       lote: moment(data.lote).format('YYYY-MM-DD'),
@@ -48,7 +49,9 @@ function Medicamentos() {
     }
     );
 
-    console.log(result);
+    if (callback !== undefined) callback(result);
+
+    if (result.status === 200)return getMedicamentos();
   }
 
   const editarMedicamento = async (data, callback) => {
@@ -67,13 +70,20 @@ function Medicamentos() {
     })
     
     if(callback!==undefined) callback(result);
-    console.log(result);
+
+    if(result.status === 200) return getMedicamentos();
   }
 
   const removeMedicamento = async (medicamento) => {
     const result = await axios.delete(`medicamentosAPI/${medicamento.id}`)
+    
+    if(result.status === 200) {
+      getMedicamentos();
+      
+      return setAlert({message:result.data.menssagem, variant:"success"})
+    }
 
-    console.log(result);
+    return setAlert({message:"Algum erro inesperado ocorreu por favor tente novamente mais tarde!", variant:"danger"});
   }
 
   const ErrorMessage = () => {
@@ -85,31 +95,18 @@ function Medicamentos() {
     );
   }
 
-  const ActionButton = ({ buttonText, target, cssClass, onClick }) => {
+  const ActionButton = ({buttonText, target, cssClass, onClick }) => {
     return (
-      <button onClick={onClick} type="button" className={`${cssClass}`} data-bs-toggle="modal" data-bs-target={`#${target}`}>
+      <a href="#" onClick={onClick} className={`${cssClass}`} data-bs-toggle="modal" data-bs-target={`#${target}`}>
         {buttonText}
-      </button>
+      </a>
 
     );
   }
-  const Controls = () => {
-    return (
-      <div
-        className="overflow-scroll container d-flex p-2 bg-dark m-5 flex-column ">
-        <div className="w-100 mb-2 d-flex justify-content-between">
-          <input className="w-100 h-100 p-2" type="text" name="search" id="search" placeholder="Nome, valor ..." />
-          <input className=" mx-2 btn btn-primary rounded-0" type="button" value="Pesquisar" />
-        </div>
-        <div>
-          <ActionButton buttonText={'Cadastrar produto'} target={'cadastroModal'} cssClass="btn btn-success rounded-0" />
-          <Modal id={'cadastroModal'} body={< MedicamentoForm submit={adicionarMedicamento} title={'Cadastrar medicamento:'} />} />
-        </div>
-      </div >
-    );
-  }
+
   return (
     <div className="min-vh-100 min-vw-100 container-fluid bg-light">
+      <Modal id={'cadastroModal'} body={< MedicamentoForm submit={adicionarMedicamento} title={'Cadastrar medicamento:'} />} />
       <Modal id={'editarModal'} body={< MedicamentoForm submit={editarMedicamento} title={'Editar medicamento:'} values={produtoEdit} />} />
       {
         loading ?
@@ -118,13 +115,24 @@ function Medicamentos() {
           (error !== null ?
             (<ErrorMessage />)
             :
-            (<ListaMedicamentos
-              controls={<Controls />}
-              medicamentos={medicamentos}
-              editar={(medicamento) => setProdutoEdit(medicamento)}
-              remove={(medicamento) => removeMedicamento(medicamento)}
-              editarBtn={(onClick) => <ActionButton onClick={onClick} buttonText={'Editar produto'} target={'editarModal'} cssClass="btn btn-success rounded-0" />}
-            />)
+            (
+              <div className="">
+              { 
+                (alert!=null) &&
+                <div className={`m-3 alert alert-${alert.variant}`}>{alert.message} Porra</div>
+              }
+              <ListaMedicamentos
+                controls={
+                  <Controls action={<a href="#" className="btn btn-success rounded-0" data-bs-toggle="modal" data-bs-target="cadastroModal">Cadastrar medicamento</a>}/>}
+                medicamentos={medicamentos}
+                editar={(medicamento) => setProdutoEdit(medicamento)}
+                remove={(medicamento) => removeMedicamento(medicamento)}
+                editarBtn={(onClick) =>  
+                  <a onClick={onClick} data-bs-toggle="modal" data-bs-target="#editarModal" className="fs-3 m-3" href="#">
+                    <i className="fa-regular fa-pen-to-square"></i>
+                  </a>
+                }/>
+              </div>)
           )
       }
     </div >

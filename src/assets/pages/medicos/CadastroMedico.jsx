@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import axios from "axios";
 
+import Alert from "../../components/Alert";
 
 const emptyMessage = (nameInput) => `O campo ${nameInput} não pode estar vazio`;
 
@@ -16,14 +19,29 @@ const schema = yup.object({
   sobrenome: yup.string().required(emptyMessage('sobrenome')),
 })
 
-function CadastroMedico() {
+function CadastroMedico() { 
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema)
   });
+  const[alert, setAlert] = useState(null);
 
-  function onSubmit(data) {
-    console.log(data);
+  function onSubmit(submitData) {
+    try{
+      const result = axios.post('/medicosAPI/', { "medico": submitData }, { headers: {'Content-Type': 'application/json'} });
+
+      const { data } = result;
+
+      if (data.status !== 200) return setAlert({ mensagem: "Erro no servidor por favor tente novamente mais tarde!", variant: "danger" });
+
+      if (data.error) return setAlert({ mensagem: data.mensagem, variant: "danger" });
+
+      return setAlert({ mensagem: data.mensagem, variant: "success" });
+    }catch(e){
+      console.log(e);
+      return setAlert({ mensagem: "Erro no servidor por favor tente novamente mais tarde!", variant: "danger" });
+    }
+    
   }
 
   function showErrors() {
@@ -37,16 +55,19 @@ function CadastroMedico() {
   }
 
   return (
-    <div className="min-vh-100 container-fluid d-flex flex-column justify-content-center align-items-center">
-      <div className="form-card text-center p-4">
+    <div className="min-vh-100 container container-fluid d-flex flex-column justify-content-center align-items-center">
+      <div className="form-card text-center w-100 p-4">
+
+        <Alert alert={alert}/>
+
         <h4 className="m-5">Cadastro de novo medico:</h4>
-        <form className="h-100" onSubmit={handleSubmit(onSubmit)}>
-          <div className="form-group mb-3 row">
-            <div className="col-md-4">
+        <form className="w-100" onSubmit={handleSubmit(onSubmit)}>
+          <div className="form-group row mb-3">
+            <div className="col">
               <label htmlFor="nome">Nome*</label>
               <input className="form-control" type="text" name="nome" id="nome" {...register("nome")} />
             </div>
-            <div className="col-md-8">
+            <div className="col">
               <label htmlFor="sobrenome">Sobrenome*</label>
               <input className="form-control" type="text" name="sobrenome" id="sobrenome" {...register("sobrenome")} />
             </div>
@@ -69,7 +90,7 @@ function CadastroMedico() {
 
           <div className="form-group mb-3">
             <label htmlFor="email">email*</label>
-            <input className="form-control" type="email" name="email" id="email" />
+            <input className="form-control" type="email" name="email" id="email" {...register("email")}/>
           </div>
 
           <div className="form-group row mb-3">
@@ -79,11 +100,13 @@ function CadastroMedico() {
             </div>
             <div className="col">
               <label htmlFor="password_validation">Confirme a senha*</label>
-              <input className="form-control" type="password" name="password_validation" id="password_validation" />
+              <input className="form-control" type="password" name="password_validation" id="password_validation" {...register("password_validation")}/>
             </div>
           </div>
-          <input className="btn w-100 btn-primary mt-5 px-5" type="submit" value="Cadastrar" />
-          <span className="text-muted">Os campos com * não podem ficar vazios</span>
+          <div className="row d-flex justify-content-center">
+            <input className="btn col-12 col-md-3 btn-primary mt-5 px-5" type="submit" value="Cadastrar" />
+            <span className="text-muted">Os campos com * não podem ficar vazios</span>
+          </div>
         </form>
       </div>
     </div>

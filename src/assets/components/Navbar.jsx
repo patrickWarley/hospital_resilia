@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 function Navbar() {
   const links=[
-    {name:"Medicos", link:"#"},
+    {name:"Medicos", link:"/medicos"},
     { name: "Pacientes", link: "#" },
     { name: "Consultas", link: "#" },
     { name: "Medicamentos", link: "/medicamentos" }
@@ -9,7 +9,7 @@ function Navbar() {
 
   return (
   <nav className="d-flex navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-      <a className="navbar-brand p-3" href="#">Modulo de gerenciamento </a>
+      <a className="navbar-brand p-3" href="/">Modulo de gerenciamento </a>
       <button className="navbar-toggler mx-4" type="button" data-bs-toggle="collapse" data-bs-target="#menucollapse" aria-controls="menucollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span className="navbar-toggler-icon"></span>
       </button>

@@ -6,9 +6,9 @@ import Footer from './assets/components/Footer';
 
 function App() {
   return (
-    <div className="container-fluid overflow-hidden p-0 min-vh-100 w-100">
+    <div className="container-fluid overflow-hidden p-0 min-vh-100 min-vw-100">
       <Navbar />
-      <main className='container-fluid'>
+      <main className='container-fluid' style={{ marginTop: '100px', paddingBottom:"100px"}}>
         <Outlet />
       </main>
       <Footer />
