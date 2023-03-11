@@ -1,9 +1,16 @@
-function Alert(content){
-  return(
+import { useRef, useState } from "react";
+
+function Alert({ content, className }) {
+  const myref = useRef(null);
+
+  setTimeout(() => myref.current.classList.add('d-none'), 3000);
+
+  return (
     <>
-    { content&&
-      <div className={`alert alert-${content.variant}`}>{content.mensagem}</div>
-    }
+      {
+        (content) &&
+        <div ref={myref} className={`${className} alert alert-${content.variant}`}>{content.mensagem}</div>
+      }
     </>
   );
 }
