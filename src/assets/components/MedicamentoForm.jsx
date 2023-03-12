@@ -1,31 +1,21 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
-
-const emptyMessage = (nameInput) => `O campo ${nameInput} não pode estar vazio`;
-
-const schema = yup.object({
-  nome: yup.string().required(emptyMessage('nome')),
-  valor: yup.string().required(emptyMessage('valor')),
-  validade: yup.date().required(emptyMessage('validade')),
-  lote: yup.date().required(emptyMessage('lote')),
-  qtd_estoque: yup.number().required(emptyMessage('Quantide em estoque'))
-})
+import { schemaMedicamento } from "../pages/schema";
 
 function MedicamentoForm({ submit, title, values }) {
   const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(schema), values
+    resolver: yupResolver(schemaMedicamento), values
   });
-  
-  const[alert, setAlert] =useState(null);
+
+  const [alert, setAlert] = useState(null);
 
   function onSubmit(data) {
     //this is ugly and hard to understand,:D
     //I'm sending a callback so I can show a message bellow the form
     submit(data, (result) => {
-      if(result.data.error)setAlert({message:result.data.mensagem, variant:"danger"});
-      setAlert({message:result.data.mensagem, variant:"success"})
+      if (result.data.error) setAlert({ message: result.data.mensagem, variant: "danger" });
+      setAlert({ message: result.data.mensagem, variant: "success" })
     });
   }
 
@@ -71,11 +61,11 @@ function MedicamentoForm({ submit, title, values }) {
 
         <input className="mt-5 px-3 btn btn-success" type="submit" value={'salvar'} />
       </form >
-      {alert!== null&&(
+      {alert !== null && (
         <div className={`m-3 row alert alert-${alert.variant}`} >
-          { alert.message }
+          {alert.message}
         </div>
-      ) 
+      )
       }
     </div >
   );

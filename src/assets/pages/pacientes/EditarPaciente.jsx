@@ -1,28 +1,60 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
 import axios from "axios";
-
+import { useParams } from "react-router-dom";
+import { schemaPaciente } from "../schema";
 import { FormatDate } from "../../util/Date";
 import Alert from "../../components/Alert";
-import { schemaMedico } from "../schema";
 
-function CadastroMedico() {
+function EditarPaciente() {
   const [sucesso, setSuccesso] = useState(false);
   const [alert, setAlert] = useState(null);
+  const [paciente, setPaciente] = useState(null);
+  const { id } = useParams();
+
+  const getPaciente = async () => {
+    try {
+      const result = await axios.get(`/pacientesAPI/${id}`);
+
+      const formatedResult = { ...result.data, data_nascimento: FormatDate(result.data_nascimento, "YYYY-MM-DD") };
+
+      setPaciente(formatedResult);
+
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   const { reset, register, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(schemaMedico)
+    resolver: yupResolver(schemaPaciente), defaultValues: {
+      email: "",
+      password: "",
+      password_validation: "",
+      cpf: "",
+      nome: "",
+      data_nascimento: "",
+      sobrenome: "",
+      telefone: "",
+      endereco: "",
+      id: ""
+    }
   });
 
-  useEffect(() => {
-    reset();
-  }, [sucesso]);
 
   const resetAlert = () => {
     setAlert(null);
   }
+
+  useEffect(() => {
+    getPaciente();
+  }, []);
+
+  useEffect(() => {
+    reset({
+      ...paciente
+    })
+  }, [paciente]);
 
   async function onSubmit(formdata) {
     try {
@@ -33,8 +65,10 @@ function CadastroMedico() {
 
       const { password_validation, ...rest } = formdata;
       const submitData = { ...rest, data_nascimento: FormatDate(rest.data_nascimento, 'YYYY-MM-DD') }
-      const result = await axios.post('/medicosAPI/', { "medico": submitData }, { headers: { 'Content-Type': 'application/json' } });
+      const result = await axios.put(`/pacientesAPI/${rest.id}`, { "paciente": submitData }, { headers: { 'Content-Type': 'application/json' } });
       const { data, status } = result;
+
+      console.log(data, status)
 
       if (status !== 200) {
         setAlert({ mensagem: "Erro no servidor por favor tente novamente mais tarde!", variant: "danger" });
@@ -64,8 +98,9 @@ function CadastroMedico() {
 
         {alert && <Alert className="mt-5 overflow-scroll" content={alert} />}
 
-        <h4 className="m-5">Cadastro de novo medico:</h4>
+        <h4 className="m-5">Editar informações do paciente</h4>
         <form className="w-100" onSubmit={handleSubmit(onSubmit)}>
+          <input type="hidden" name="id" id="id" {...register("id")} />
           <div className="form-group row mb-3">
             <div className="col">
               <label htmlFor="nome" className="form-label">Nome*</label>
@@ -81,14 +116,9 @@ function CadastroMedico() {
 
           <div className="form-group row mb-3">
             <div className="col">
-              <label className="form-label" htmlFor="crm">crm*</label>
-              <input className="form-control" type="text" name="crm" id="crm" {...register("crm")} />
-              <div className="text-danger">{errors['crm']?.message}</div>
-            </div>
-            <div className="col">
-              <label htmlFor="especialidade" className="form-label">Especialidade*</label>
-              <input className="form-control" type="text" name="especialidade" id="especialidade" {...register("especialidade")} />
-              <div className="text-danger">{errors['especialidade']?.message}</div>
+              <label className="form-label" htmlFor="cpf">cpf*</label>
+              <input className="form-control" type="text" name="cpf" id="cpf" {...register("cpf")} />
+              <div className="text-danger">{errors['cpf']?.message}</div>
             </div>
             <div className="col">
               <label htmlFor="data_nascimento" className="form-label">Data de nascimento*</label>
@@ -117,17 +147,17 @@ function CadastroMedico() {
           <div className="form-group row mb-3">
             <div className="col">
               <label htmlFor="password" className="form-label">Senha*</label>
-              <input className="form-control" type="password" name="password" id="password" {...register("password")} />
+              <input disabled className="form-control" type="password" name="password" id="password" {...register("password")} />
               <div className="text-danger">{errors['senha']?.message}</div>
             </div>
             <div className="col">
               <label htmlFor="password_validation" className="form-label">Confirme a senha*</label>
-              <input className="form-control" type="password" name="password_validation" id="password_validation" {...register("password_validation")} />
+              <input disabled className="form-control" type="password" name="password_validation" id="password_validation" {...register("password_validation")} />
               <div className="text-danger">{errors['password_validation']?.message}</div>
             </div>
           </div>
           <div className="row d-flex justify-content-center">
-            <input className="btn col-12 col-md-3 btn-primary mt-5 px-5" type="submit" value="Cadastrar" />
+            <input className="btn col-12 col-md-3 btn-success mt-5 px-5" type="submit" value="Salvar" />
             <span className="text-muted">Os campos com * não podem ficar vazios</span>
           </div>
         </form>
@@ -136,4 +166,4 @@ function CadastroMedico() {
   );
 }
 
-export default CadastroMedico;
+export default EditarPaciente;

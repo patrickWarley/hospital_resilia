@@ -3,17 +3,17 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import axios from "axios";
+import { schemaPaciente } from "../schema";
 
 import { FormatDate } from "../../util/Date";
 import Alert from "../../components/Alert";
-import { schemaMedico } from "../schema";
 
-function CadastroMedico() {
+function CadastroPaciente() {
   const [sucesso, setSuccesso] = useState(false);
   const [alert, setAlert] = useState(null);
 
   const { reset, register, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(schemaMedico)
+    resolver: yupResolver(schemaPaciente)
   });
 
   useEffect(() => {
@@ -33,7 +33,7 @@ function CadastroMedico() {
 
       const { password_validation, ...rest } = formdata;
       const submitData = { ...rest, data_nascimento: FormatDate(rest.data_nascimento, 'YYYY-MM-DD') }
-      const result = await axios.post('/medicosAPI/', { "medico": submitData }, { headers: { 'Content-Type': 'application/json' } });
+      const result = await axios.post('/pacientesAPI/', { "paciente": submitData }, { headers: { 'Content-Type': 'application/json' } });
       const { data, status } = result;
 
       if (status !== 200) {
@@ -64,7 +64,7 @@ function CadastroMedico() {
 
         {alert && <Alert className="mt-5 overflow-scroll" content={alert} />}
 
-        <h4 className="m-5">Cadastro de novo medico:</h4>
+        <h4 className="m-5">Cadastro de novo paciente:</h4>
         <form className="w-100" onSubmit={handleSubmit(onSubmit)}>
           <div className="form-group row mb-3">
             <div className="col">
@@ -81,14 +81,9 @@ function CadastroMedico() {
 
           <div className="form-group row mb-3">
             <div className="col">
-              <label className="form-label" htmlFor="crm">crm*</label>
-              <input className="form-control" type="text" name="crm" id="crm" {...register("crm")} />
-              <div className="text-danger">{errors['crm']?.message}</div>
-            </div>
-            <div className="col">
-              <label htmlFor="especialidade" className="form-label">Especialidade*</label>
-              <input className="form-control" type="text" name="especialidade" id="especialidade" {...register("especialidade")} />
-              <div className="text-danger">{errors['especialidade']?.message}</div>
+              <label className="form-label" htmlFor="cpf">cpf*</label>
+              <input className="form-control" type="text" name="cpf" id="cpf" {...register("cpf")} />
+              <div className="text-danger">{errors['cpf']?.message}</div>
             </div>
             <div className="col">
               <label htmlFor="data_nascimento" className="form-label">Data de nascimento*</label>
@@ -136,4 +131,4 @@ function CadastroMedico() {
   );
 }
 
-export default CadastroMedico;
+export default CadastroPaciente;

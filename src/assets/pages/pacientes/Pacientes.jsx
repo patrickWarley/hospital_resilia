@@ -1,16 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import placeHolder from "../../images/placeholder.jpg"
+
+import placeHolder from "../../images/placeholder.jpg";
 import { FormatDate } from "../../util/Date"
 import Controls from "../../components/Controls";
 import MyDialog from "../../components/MyDialog";
 import Alert from "../../components/Alert"
 
-const API = "/medicosAPI";
+const API = "/pacientesAPI";
 
-function Medicos() {
-  const [medicos, setMedicos] = useState(null);
+function Pacientes() {
+  const [pacientes, setPacientes] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [idDelete, setIdDelete] = useState(null);
   const [alert, setAlert] = useState(null);
@@ -19,11 +20,11 @@ function Medicos() {
     return setTimeout(() => setAlert(null), 3000);
   }
 
-  async function getMedicos() {
+  async function getPacientes() {
     try {
       //remember that axios return the data inside data
       const response = await axios.get(API);
-      setMedicos(response.data);
+      setPacientes(response.data);
 
       console.log(response.data)
     } catch (e) {
@@ -31,7 +32,7 @@ function Medicos() {
     }
   }
 
-  async function deleteMedico(id) {
+  async function deletePaciente(id) {
     try {
       window.scrollTo(0, 0);
 
@@ -43,7 +44,7 @@ function Medicos() {
       setOpenDialog(false);
       setAlert({ mensagem: data.mensagem, variant: (data.error ? "danger" : "success") });
       resetAlert();
-      return getMedicos();
+      return getPacientes();
 
     } catch (e) {
 
@@ -55,21 +56,21 @@ function Medicos() {
   }
 
   useEffect(() => {
-    getMedicos();
+    getPacientes();
   }, [])
 
 
   return (
     <div className="container mt-5 min-vh-100">
       <Controls
-        action={<Link to="/cadastroMedico" className="btn btn-success rounded-0">Cadastrar Medico</Link>}
+        action={<Link to="/cadastroPaciente" className="btn btn-success rounded-0">Cadastrar Paciente</Link>}
       />
 
       <MyDialog
-        confirm={() => deleteMedico(idDelete)}
+        confirm={() => deletePaciente(idDelete)}
         cancel={() => setOpenDialog(false)}
-        title={"Excluir Medico"}
-        description={"Ao clicar em confirmar voce excluirá o medico permanentemente da base de dados"}
+        title={"Excluir Paciente"}
+        description={"Ao clicar em confirmar voce excluirá o paciente permanentemente da base de dados"}
         isOpen={openDialog}
         onClose={() => setOpenDialog(false)}
       />
@@ -78,22 +79,22 @@ function Medicos() {
 
       <div className="container medicos-grid col-12">
         {
-          medicos !== null ? (
-            medicos.length !== 0 ?
+          pacientes !== null ? (
+            pacientes.length !== 0 ?
               (
                 <ul className="list-group mb-5">{
-                  medicos.map(medico => {
+                  pacientes.map(paciente => {
                     return (
                       <li className="list-group-item p-5">{
                         <div className="row d-flex align-items-center justify-content-center position-relative">
                           <div className="commands position-absolute top-0 end-0 d-flex" style={{ width: '50px', color: 'red' }}>
                             <a onClick={() => {
-                              setIdDelete(medico.id);
+                              setIdDelete(paciente.id);
                               setOpenDialog(true);
                             }}>
                               <i className="m-2 fa-solid fa-trash-can"></i>
                             </a>
-                            <Link className="" to={`/editarMedico/${medico.id}`}>
+                            <Link className="" to={`/editarPaciente/${paciente.id}`}>
                               <i className="m-2 fa-solid fa-pen"></i>
                             </Link>
                           </div>
@@ -101,15 +102,15 @@ function Medicos() {
                             <img
                               className="figure-image img-fluid rounded"
                               src={placeHolder}
-                              alt="Foto do medico"
+                              alt="Foto do paciente"
                               style={{ width: "100px" }}
                             />
                           </div>
                           <div className="col-12 col-md-8">
-                            <p><span className="fw-bolder">Nome</span>: {medico.nome} {medico.sobrenome}</p>
-                            <p><span className="fw-bolder">CRM</span>: {medico.crm}<br />
-                              <span className="fw-bolder">Data de nascimento</span>: {FormatDate(medico.data_nascimento, 'YYYY-MMM-DD')}</p>
-                            <p><span className="fw-bolder">Especialidade</span>: {medico.especialidade}</p>
+                            <p><span className="fw-bolder">Nome</span>: {paciente.nome} {paciente.sobrenome}</p>
+                            <p><span className="fw-bolder">CPF</span>: {paciente.cpf}<br />
+                              <span className="fw-bolder">Data de nascimento</span>: {FormatDate(paciente.data_nascimento, 'YYYY-MMM-DD')}</p>
+                            <p><button className="btn btn-primary">Consultas</button></p>
                           </div>
                         </div>
                       }</li>
@@ -118,7 +119,7 @@ function Medicos() {
                 }</ul>)
               :
               (
-                <h4>Nenhum medico cadastrado ainda!</h4>
+                <h4>Nenhum paciente cadastrado ainda!</h4>
               )
           ) :
             (
@@ -132,4 +133,4 @@ function Medicos() {
   );
 }
 
-export default Medicos;
+export default Pacientes;

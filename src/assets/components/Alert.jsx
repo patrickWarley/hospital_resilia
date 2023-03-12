@@ -2,9 +2,6 @@ import { useRef, useState } from "react";
 
 function Alert({ content, className }) {
   const myref = useRef(null);
-
-  setTimeout(() => myref.current.classList.add('d-none'), 3000);
-
   return (
     <>
       {
