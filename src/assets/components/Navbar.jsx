@@ -4,7 +4,8 @@ function Navbar() {
     { name: "Medicos", link: "/medicos" },
     { name: "Pacientes", link: "/pacientes" },
     { name: "Consultas", link: "#" },
-    { name: "Medicamentos", link: "/medicamentos" }
+    { name: "Medicamentos", link: "/medicamentos" },
+    { name: "Unidades", link: "/unidades" }
   ];
 
   return (

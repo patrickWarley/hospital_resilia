@@ -124,7 +124,7 @@ function Medicamentos() {
                 }
                 <ListaMedicamentos
                   controls={
-                    <Controls action={<a href="#" className="btn btn-success rounded-0" data-bs-toggle="modal" data-bs-target="cadastroModal">Cadastrar medicamento</a>} />}
+                    <Controls action={<a href="#" className="btn btn-success rounded-0" data-bs-toggle="modal" data-bs-target="#cadastroModal">Cadastrar medicamento</a>} />}
                   medicamentos={medicamentos}
                   editar={(medicamento) => setProdutoEdit(medicamento)}
                   remove={(medicamento) => removeMedicamento(medicamento)}

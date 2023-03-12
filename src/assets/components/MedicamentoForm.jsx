@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { schemaMedicamento } from "../pages/schema";
 
 function MedicamentoForm({ submit, title, values }) {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { reset, register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schemaMedicamento), values
   });
 
@@ -15,7 +15,9 @@ function MedicamentoForm({ submit, title, values }) {
     //I'm sending a callback so I can show a message bellow the form
     submit(data, (result) => {
       if (result.data.error) setAlert({ message: result.data.mensagem, variant: "danger" });
+
       setAlert({ message: result.data.mensagem, variant: "success" })
+      reset();
     });
   }
 

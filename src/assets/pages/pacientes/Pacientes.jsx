@@ -39,9 +39,10 @@ function Pacientes() {
       const response = await axios.delete(`${API}/${id}`);
       const { data, status } = response;
 
-      if (status != 200) return setAlert({ mensagem: "Algum erro ocorreu tente novamente mais tarde!", variant: "danger" });
+      if (status !== 200) return setAlert({ mensagem: "Algum erro ocorreu tente novamente mais tarde!", variant: "danger" });
 
       setOpenDialog(false);
+
       setAlert({ mensagem: data.mensagem, variant: (data.error ? "danger" : "success") });
       resetAlert();
       return getPacientes();

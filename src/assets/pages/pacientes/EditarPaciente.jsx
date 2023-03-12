@@ -8,7 +8,6 @@ import { FormatDate } from "../../util/Date";
 import Alert from "../../components/Alert";
 
 function EditarPaciente() {
-  const [sucesso, setSuccesso] = useState(false);
   const [alert, setAlert] = useState(null);
   const [paciente, setPaciente] = useState(null);
   const { id } = useParams();
@@ -82,7 +81,6 @@ function EditarPaciente() {
 
       setAlert({ mensagem: data.mensagem, variant: "success" });
       setTimeout(resetAlert, 3000)
-      setSuccesso(true);
 
     } catch (e) {
       console.log(e);

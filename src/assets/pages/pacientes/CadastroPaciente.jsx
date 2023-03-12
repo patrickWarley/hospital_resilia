@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
 import axios from "axios";
 import { schemaPaciente } from "../schema";
 
@@ -9,16 +8,11 @@ import { FormatDate } from "../../util/Date";
 import Alert from "../../components/Alert";
 
 function CadastroPaciente() {
-  const [sucesso, setSuccesso] = useState(false);
   const [alert, setAlert] = useState(null);
 
   const { reset, register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schemaPaciente)
   });
-
-  useEffect(() => {
-    reset();
-  }, [sucesso]);
 
   const resetAlert = () => {
     setAlert(null);
@@ -48,7 +42,7 @@ function CadastroPaciente() {
 
       setAlert({ mensagem: data.mensagem, variant: "success" });
       setTimeout(resetAlert, 3000)
-      setSuccesso(true);
+      reset();
 
     } catch (e) {
       console.log(e);

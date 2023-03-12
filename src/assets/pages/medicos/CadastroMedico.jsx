@@ -9,16 +9,11 @@ import Alert from "../../components/Alert";
 import { schemaMedico } from "../schema";
 
 function CadastroMedico() {
-  const [sucesso, setSuccesso] = useState(false);
   const [alert, setAlert] = useState(null);
 
   const { reset, register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schemaMedico)
   });
-
-  useEffect(() => {
-    reset();
-  }, [sucesso]);
 
   const resetAlert = () => {
     setAlert(null);
@@ -48,7 +43,7 @@ function CadastroMedico() {
 
       setAlert({ mensagem: data.mensagem, variant: "success" });
       setTimeout(resetAlert, 3000)
-      setSuccesso(true);
+      reset();
 
     } catch (e) {
       console.log(e);

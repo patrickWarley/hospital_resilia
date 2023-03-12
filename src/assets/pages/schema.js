@@ -28,10 +28,29 @@ export const schemaMedico = yup.object({
   endereco: yup.string().required(emptyMessage('endereco'))
 });
 
+export const schemaMedicoEdit = yup.object({
+  email: yup.string().required(emptyMessage('email')).email("Digite um email valido!").max(100, "O email não pode ter mais de 100 caracteres."),
+  crm: yup.string().required(emptyMessage('crm')).max(11, "O crm deve ter 11 caracteres.").min(11, "O crm deve ter 11 caracteres."),
+  nome: yup.string().required(emptyMessage('nome')).max(50, "O nome não pode ter mais de 50 caracteres."),
+  especialidade: yup.string().required(emptyMessage('especialidade')).max(50, "A especialidade nao pode ter mais de 50 caracteres."),
+  data_nascimento: yup.date("Data de nascimento com valor invalido!").required(emptyMessage('data de nascimento')),
+  sobrenome: yup.string().required(emptyMessage('sobrenome')),
+  telefone: yup.string().required(emptyMessage('telefone')),
+  endereco: yup.string().required(emptyMessage('endereco'))
+});
+
+
 export const schemaMedicamento = yup.object({
   nome: yup.string().required(emptyMessage('nome')),
   valor: yup.string().required(emptyMessage('valor')),
   validade: yup.date().required(emptyMessage('validade')),
   lote: yup.date().required(emptyMessage('lote')),
   qtd_estoque: yup.number().required(emptyMessage('Quantide em estoque'))
+});
+
+export const schemaUnidades = yup.object({
+  cnpj: yup.string().required(emptyMessage('cnpj')).max(14, 'O campo CNPJ deve conter no maximo 11 caracteres.'),
+  nome: yup.string().required(emptyMessage('nome')).max(50, "O campo nome pode ter no maximo 50 caracteres!"),
+  endereco: yup.string().required(emptyMessage('endereco')).max(100, "O campo endereco pode ter no maximo 100 caracteres!"),
+  telefone: yup.string().required(emptyMessage('telefone')).max(20, "O campo telefone pode ter no maximo 20 caracteres!")
 });
