@@ -10,6 +10,9 @@ import placeHolder from "../../images/maps.jpg";
 
 function Unidades() {
   const [unidades, setUnidades] = useState(null);
+  const [showUnidades, setShowUnidades] = useState(null);
+  const [filteredUnidades, setFilteredUnidades] = useState(null);
+
   const [error, setError] = useState(false);
   const [openDialog, setOpenDialog] = useState(false)
   const [alert, setAlert] = useState(false);
@@ -20,12 +23,19 @@ function Unidades() {
       const result = await axios.get('/unidadesAPI');
 
       if (result.status !== 200 || result.data.error) return setError(true);
-      return setUnidades(result.data)
+      setShowUnidades(result.data)
+      setUnidades(result.data)
+
     } catch (e) {
       console.log(e);
       return setError(true);
     }
   }
+
+  useEffect(() => {
+    if (filteredUnidades === null) return setShowUnidades(unidades);
+    return setShowUnidades(filteredUnidades);
+  }, [filteredUnidades])
 
   const resetAlert = () => {
     return setTimeout(() => setAlert(null), 3000);
@@ -67,6 +77,12 @@ function Unidades() {
   return (
     <div className="container mt-5 min-vh-100">
       <Controls
+        buscaFN={(param) => {
+          if (param.trim === "" || param === "" || param === null) return setFilteredUnidades(null);
+          const result = unidades.filter(unidade => unidade.cnpj.includes(param));
+          return setFilteredUnidades(result);
+        }}
+        placeholder="Buscar por CNPJ ..."
         action={
           <Link to="/cadastrarUnidade" className="btn btn-success rounded-0">Cadastrar Unidade</Link>}
       />
@@ -84,11 +100,11 @@ function Unidades() {
 
       <div className="container medicos-grid col-12">
         {
-          unidades !== null ? (
-            unidades.length !== 0 ?
+          showUnidades !== null ? (
+            showUnidades.length !== 0 ?
               (
                 <ul className="list-group mb-5">{
-                  unidades.map(unidade => {
+                  showUnidades.map(unidade => {
                     return (
                       <li className="list-group-item p-5">{
                         <div className="row d-flex align-items-center justify-content-center position-relative">

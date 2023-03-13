@@ -9,7 +9,8 @@ function Home() {
           <a href="/login" className="btn btn-secondary m-5 px-5" type="button">Login</a>
         </div>
         <div className="scroll-down h-25 d-flex flex-column justify-content-end">
-          <ScrollDown nextSection={"#info"} />
+          {//<ScrollDown nextSection={"#info"} />
+          }
         </div>
       </section>
 

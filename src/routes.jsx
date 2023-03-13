@@ -16,6 +16,13 @@ import Unidades from "./assets/pages/unidades/Unidades";
 import EditarUnidade from "./assets/pages/unidades/EditarUnidade";
 import CadastrarUnidade from "./assets/pages/unidades/CadastrarUnidade";
 
+import Exames from "./assets/pages/exames/Exames";
+import EditarExame from "./assets/pages/exames/EditarExame";
+import CadastrarExame from "./assets/pages/exames/CadastrarExame"
+import Consultas from "./assets/pages/consultas/Consultas";
+import EditarConsulta from "./assets/pages/consultas/EditarConsulta";
+import CadastrarConsulta from "./assets/pages/consultas/CadastrarConsulta";
+
 const pacienteRoutes = [
   {
     path: '/pacientes',
@@ -59,6 +66,36 @@ const unidadesRoutes = [
     path: '/cadastrarUnidade',
     element: <CadastrarUnidade />
   }
+];
+
+const examesRoutes = [
+  {
+    path: '/exames',
+    element: <Exames />
+  },
+  {
+    path: '/editarExame/:id',
+    element: <EditarExame />
+  },
+  {
+    path: '/cadastrarExame',
+    element: <CadastrarExame />
+  }
+];
+
+const consultasRoutes = [
+  {
+    path: '/consultas',
+    element: <Consultas />
+  },
+  {
+    path: '/editarConsulta/:id',
+    element: <EditarConsulta />
+  },
+  {
+    path: '/cadastrarConsulta',
+    element: <CadastrarConsulta />
+  }
 ]
 export const routes = createBrowserRouter([
   {
@@ -77,6 +114,8 @@ export const routes = createBrowserRouter([
       ...pacienteRoutes,
       ...medicoRoutes,
       ...unidadesRoutes,
+      ...examesRoutes,
+      ...consultasRoutes,
       {
         path: '/medicamentos',
         element: <Medicamentos />

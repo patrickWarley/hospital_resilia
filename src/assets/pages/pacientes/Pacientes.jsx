@@ -12,6 +12,9 @@ const API = "/pacientesAPI";
 
 function Pacientes() {
   const [pacientes, setPacientes] = useState(null);
+  const [showPacientes, setShowPacientes] = useState(null);
+  const [filteredPacientes, setFilteredPacientes] = useState(null);
+
   const [openDialog, setOpenDialog] = useState(false);
   const [idDelete, setIdDelete] = useState(null);
   const [alert, setAlert] = useState(null);
@@ -25,12 +28,18 @@ function Pacientes() {
       //remember that axios return the data inside data
       const response = await axios.get(API);
       setPacientes(response.data);
+      setShowPacientes(response.data);
 
       console.log(response.data)
     } catch (e) {
       console.log(e);
     }
   }
+
+  useEffect(() => {
+    if (filteredPacientes === null) return setShowPacientes(pacientes);
+    return setShowPacientes(filteredPacientes);
+  }, [filteredPacientes]);
 
   async function deletePaciente(id) {
     try {
@@ -64,6 +73,12 @@ function Pacientes() {
   return (
     <div className="container mt-5 min-vh-100">
       <Controls
+        buscaFN={(param) => {
+          if (param.trim === "" || param === "" || param === null) return setFilteredPacientes(null);
+          const result = pacientes.filter(paciente => paciente.cpf.includes(param));
+          return setFilteredPacientes(result);
+        }}
+        placeholder="Buscar por CPF ..."
         action={<Link to="/cadastroPaciente" className="btn btn-success rounded-0">Cadastrar Paciente</Link>}
       />
 
@@ -80,11 +95,11 @@ function Pacientes() {
 
       <div className="container medicos-grid col-12">
         {
-          pacientes !== null ? (
-            pacientes.length !== 0 ?
+          showPacientes !== null ? (
+            showPacientes.length !== 0 ?
               (
                 <ul className="list-group mb-5">{
-                  pacientes.map(paciente => {
+                  showPacientes.map(paciente => {
                     return (
                       <li className="list-group-item p-5">{
                         <div className="row d-flex align-items-center justify-content-center position-relative">
@@ -111,7 +126,7 @@ function Pacientes() {
                             <p><span className="fw-bolder">Nome</span>: {paciente.nome} {paciente.sobrenome}</p>
                             <p><span className="fw-bolder">CPF</span>: {paciente.cpf}<br />
                               <span className="fw-bolder">Data de nascimento</span>: {FormatDate(paciente.data_nascimento, 'YYYY-MMM-DD')}</p>
-                            <p><button className="btn btn-primary">Consultas</button></p>
+                            <p><button className="btn btn-primary" disabled>Consultas</button></p>
                           </div>
                         </div>
                       }</li>

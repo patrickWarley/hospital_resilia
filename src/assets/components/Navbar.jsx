@@ -3,7 +3,8 @@ function Navbar() {
   const links = [
     { name: "Medicos", link: "/medicos" },
     { name: "Pacientes", link: "/pacientes" },
-    { name: "Consultas", link: "#" },
+    { name: "Consultas", link: "/consultas" },
+    { name: "Exames", link: "/exames" },
     { name: "Medicamentos", link: "/medicamentos" },
     { name: "Unidades", link: "/unidades" }
   ];

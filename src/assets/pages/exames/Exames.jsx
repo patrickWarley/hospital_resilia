@@ -1,16 +1,19 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import placeHolder from "../../images/placeholder.jpg"
+import { FormatDate } from "../../util/Date"
 import Controls from "../../components/Controls";
 import MyDialog from "../../components/MyDialog";
 import Alert from "../../components/Alert"
 
-const API = "/consultasAPI";
+const API = "/examesAPI";
 
-function Consultas() {
-  const [showConsultas, setShowConsultas] = useState(null);
-  const [consultas, setConsultas] = useState(null);
-  const [filteredConsultas, setFilteredConsultas] = useState(null);
+function Exames() {
+  const [exames, setExames] = useState(null);
+  const [showExames, setShowExames] = useState(null);
+  const [filteredExames, setFilteredExames] = useState(null);
+
   const [openDialog, setOpenDialog] = useState(false);
   const [idDelete, setIdDelete] = useState(null);
   const [alert, setAlert] = useState(null);
@@ -19,19 +22,12 @@ function Consultas() {
     return setTimeout(() => setAlert(null), 3000);
   }
 
-  useEffect(() => {
-    if (filteredConsultas === null) return setShowConsultas(consultas);
-
-    return setShowConsultas(filteredConsultas);
-
-  }, [filteredConsultas])
-
-  async function getConsultas() {
+  async function getExames() {
     try {
       //remember that axios return the data inside data
       const response = await axios.get(API);
-      setConsultas(response.data);
-      setShowConsultas(response.data);
+      setExames(response.data);
+      setShowExames(response.data);
 
       console.log(response.data)
     } catch (e) {
@@ -39,19 +35,25 @@ function Consultas() {
     }
   }
 
-  async function deleteConsulta(id) {
+  useEffect(() => {
+    if (filteredExames === null) return setShowExames(exames);
+    console.log(filteredExames)
+    return setShowExames(filteredExames);
+  }, [filteredExames]);
+
+  async function deleteExame(id) {
     try {
       window.scrollTo(0, 0);
 
       const response = await axios.delete(`${API}/${id}`);
       const { data, status } = response;
-      console.log(data)
+
       if (status !== 200) return setAlert({ mensagem: "Algum erro ocorreu tente novamente mais tarde!", variant: "danger" });
 
       setOpenDialog(false);
       setAlert({ mensagem: data.mensagem, variant: (data.error ? "danger" : "success") });
       resetAlert();
-      return getConsultas();
+      return getExames();
 
     } catch (e) {
 
@@ -63,7 +65,7 @@ function Consultas() {
   }
 
   useEffect(() => {
-    getConsultas();
+    getExames();
   }, [])
 
 
@@ -71,19 +73,19 @@ function Consultas() {
     <div className="container mt-5 min-vh-100">
       <Controls
         buscaFN={(param) => {
-          if (param.trim === "" || param === "" || param === null) return setFilteredConsultas(null);
-          const result = consultas.filter(consulta => consulta.cpf_paciente.includes(param));
-          setFilteredConsultas(result);
+          if (param.trim === "" || param === "" || param === null) return setFilteredExames(null);
+          const result = exames.filter(exame => exame.nome_paciente.includes(param));
+          return setFilteredExames(result);
         }}
-        placeholder="Buscar por CPF"
-        action={<Link to="/cadastrarConsulta" className="btn btn-success rounded-0">Cadastrar consulta</Link>}
+        placeholder="Buscar por nome do paciente ..."
+        action={<Link to="/cadastrarExame" className="btn btn-success rounded-0">Cadastrar Exame</Link>}
       />
 
       <MyDialog
-        confirm={() => deleteConsulta(idDelete)}
+        confirm={() => deleteExame(idDelete)}
         cancel={() => setOpenDialog(false)}
-        title={"Excluir consulta"}
-        description={"Ao clicar em confirmar voce excluirá a consulta permanentemente da base de dados"}
+        title={"Excluir Exame"}
+        description={"Ao clicar em confirmar voce excluirá o exame permanentemente da base de dados"}
         isOpen={openDialog}
         onClose={() => setOpenDialog(false)}
       />
@@ -92,30 +94,30 @@ function Consultas() {
 
       <div className="container medicos-grid col-12">
         {
-          showConsultas !== null ? (
-            showConsultas.length !== 0 ?
+          showExames !== null ? (
+            showExames.length !== 0 ?
               (
                 <ul className="list-group mb-5">{
-                  showConsultas.map(consulta => {
+                  showExames.map(exame => {
                     return (
                       <li className="list-group-item p-5">{
                         <div className="row d-flex align-items-center justify-content-center position-relative">
                           <div className="commands position-absolute top-0 end-0 d-flex" style={{ width: '50px', color: 'red' }}>
                             <a onClick={() => {
-                              setIdDelete(consulta.id);
+                              setIdDelete(exame.id);
                               setOpenDialog(true);
                             }}>
                               <i className="m-2 fa-solid fa-trash-can"></i>
                             </a>
-                            <Link className="" to={`/editarConsulta/${consulta.id}`}>
+                            <Link className="" to={`/editarExame/${exame.id}`}>
                               <i className="m-2 fa-solid fa-pen"></i>
                             </Link>
                           </div>
                           <div className="col-12 col-md-12">
-                            <p><span className="fw-bolder">Especialidade</span>: {consulta.especialidade}</p>
-                            <p><span className="fw-bolder">Motivo procura</span>: {consulta.motivo_procura}<br />
-                              <span className="fw-bolder">Observação medico</span>:{consulta.observacao_medico}</p>
-                            <p><span className="fw-bolder">CPF</span>: {consulta.cpf_paciente}</p>
+                            <p><span className="fw-bolder">Nome</span>: {exame.nome_exame}</p>
+                            <p><span className="fw-bolder">Nome paciente</span>: {exame.nome_paciente}<br />
+                              <span className="fw-bolder">CRM medico</span>:{exame.crm}</p>
+                            <p><span className="fw-bolder">Descricao</span>: {exame.descricao}</p>
                           </div>
                         </div>
                       }</li>
@@ -124,7 +126,7 @@ function Consultas() {
                 }</ul>)
               :
               (
-                <h4>Nenhum consulta cadastrada ainda!</h4>
+                <h4>Nenhum exame cadastrado ainda!</h4>
               )
           ) :
             (
@@ -138,4 +140,4 @@ function Consultas() {
   );
 }
 
-export default Consultas;
+export default Exames;

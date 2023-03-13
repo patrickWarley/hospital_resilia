@@ -11,6 +11,9 @@ const API = "/medicosAPI";
 
 function Medicos() {
   const [medicos, setMedicos] = useState(null);
+  const [showMedicos, setShowMedicos] = useState(null);
+  const [filteredMedicos, setFilteredMedicos] = useState(null);
+
   const [openDialog, setOpenDialog] = useState(false);
   const [idDelete, setIdDelete] = useState(null);
   const [alert, setAlert] = useState(null);
@@ -24,12 +27,18 @@ function Medicos() {
       //remember that axios return the data inside data
       const response = await axios.get(API);
       setMedicos(response.data);
+      setShowMedicos(response.data);
 
       console.log(response.data)
     } catch (e) {
       console.log(e);
     }
   }
+
+  useEffect(() => {
+    if (filteredMedicos === null) return setShowMedicos(medicos);
+    return setShowMedicos(filteredMedicos);
+  }, [filteredMedicos])
 
   async function deleteMedico(id) {
     try {
@@ -38,7 +47,7 @@ function Medicos() {
       const response = await axios.delete(`${API}/${id}`);
       const { data, status } = response;
 
-      if (status != 200) return setAlert({ mensagem: "Algum erro ocorreu tente novamente mais tarde!", variant: "danger" });
+      if (status !== 200) return setAlert({ mensagem: "Algum erro ocorreu tente novamente mais tarde!", variant: "danger" });
 
       setOpenDialog(false);
       setAlert({ mensagem: data.mensagem, variant: (data.error ? "danger" : "success") });
@@ -62,6 +71,12 @@ function Medicos() {
   return (
     <div className="container mt-5 min-vh-100">
       <Controls
+        buscaFN={(param) => {
+          if (param.trim === "" || param === "" || param === null) return setFilteredMedicos(null);
+          const result = medicos.filter(medico => medico.nome.includes(param));
+          return setFilteredMedicos(result);
+        }}
+        placeholder="Buscar por nome ..."
         action={<Link to="/cadastroMedico" className="btn btn-success rounded-0">Cadastrar Medico</Link>}
       />
 
@@ -78,11 +93,11 @@ function Medicos() {
 
       <div className="container medicos-grid col-12">
         {
-          medicos !== null ? (
-            medicos.length !== 0 ?
+          showMedicos !== null ? (
+            showMedicos.length !== 0 ?
               (
                 <ul className="list-group mb-5">{
-                  medicos.map(medico => {
+                  showMedicos.map(medico => {
                     return (
                       <li className="list-group-item p-5">{
                         <div className="row d-flex align-items-center justify-content-center position-relative">
